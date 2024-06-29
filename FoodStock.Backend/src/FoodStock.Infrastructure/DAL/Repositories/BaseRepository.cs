@@ -19,7 +19,7 @@ internal class BaseRepository<T> : IAsyncRepository<T> where T : class
 
     public async Task<List<T>> GetAllAsync()
     {
-        return await _dbContext.Set<T>()
+        return await _dbContext.Set<T>().AsNoTracking()
             .ToListAsync();
     }
 

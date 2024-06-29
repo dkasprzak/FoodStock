@@ -4,4 +4,5 @@ namespace FoodStock.Application.Functions.ProductFunctions.Queries.GetProductsLi
 
 public class GetProductListQuery : IRequest<List<ProductListViewModel>>
 {
+    public string? OrderBy { get; set; }    
 }

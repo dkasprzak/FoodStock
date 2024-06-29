@@ -27,7 +27,13 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
         {
             return new UpdateProductCommandResponse(validatorResult);
         }
-        var product = _mapper.Map<Product>(request);
+
+        var product = await _productRepository.GetProductDetailAsync(request.Id);
+        if (product is null)
+        {
+            throw new ProductNotFoundException(request.Id);
+        }
+        _mapper.Map(request, product);
         await _productRepository.UpdateAsync(product);
         return new UpdateProductCommandResponse(product.Id); 
     }

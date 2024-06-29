@@ -1,6 +1,12 @@
-﻿using FoodStock.Infrastructure.DAL;
+﻿using FluentValidation;
+using FoodStock.Core.Entities;
+using FoodStock.Infrastructure.Authentication;
+using FoodStock.Infrastructure.Authentication.DTO;
+using FoodStock.Infrastructure.Authentication.Services;
+using FoodStock.Infrastructure.DAL;
 using FoodStock.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,6 +21,7 @@ public static class Extensions
         services.AddSingleton<ExceptionMiddleware>();
         services.AddControllers();
         services.AddPostgres(configuration);
+        services.AddAuth(configuration);
         services.AddCors(options =>
         {
             options.AddPolicy(name: MyAllowSpecificOrigins,

@@ -21,8 +21,12 @@ internal static class Extensions
         services.AddScoped<IProducentRepository, ProducentRepository>();
         services.AddScoped<ISupplierRepository, SupplierRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
+        services.AddScoped<IRoleRepository, RoleRepository>();
+        services.AddScoped<IOrganizationRepository, OrganizationRepository>();
+        services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddScoped<IOrderItemRepository, OrderItemRepository>();
         services.AddHostedService<DatabaseInitializer>();
-        
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         
         return services;

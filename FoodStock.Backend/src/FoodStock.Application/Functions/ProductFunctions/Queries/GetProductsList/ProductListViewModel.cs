@@ -4,7 +4,8 @@ public sealed record ProductListViewModel
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
-    public string Category { get; set; }
+    public string CategoryId { get; set; }
+    public string CategoryName { get; set; }
     public string ProducentName { get; set; }
     public DateTime ExpirationDate { get; set; }
     public int Quantity { get; set; }

@@ -21,7 +21,7 @@ public class GetSupplierDetailHandler : IRequestHandler<GetSupplierDetailQuery, 
         var supplier = await _supplierRepository.GetByIdAsync(request.Id);
         if (supplier is null)
         {
-            throw new SupplierNotFoundExcpetion(request.Id);
+            throw new SupplierNotFoundException(request.Id);
         }
         var supplierDetail = _mapper.Map<SupplierDetailViewModel>(supplier);
         return supplierDetail;

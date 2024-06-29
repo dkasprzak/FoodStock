@@ -1,6 +1,6 @@
 ﻿namespace FoodStock.Application.Repositories;
 
-public interface IAsyncRepository<T> where T : class
+public interface IAsyncRepository<T>
 {
     Task<T> GetByIdAsync(Guid id);
     Task<List<T>> GetAllAsync();

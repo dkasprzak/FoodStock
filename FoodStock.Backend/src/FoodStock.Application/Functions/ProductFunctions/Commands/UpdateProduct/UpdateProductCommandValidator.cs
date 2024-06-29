@@ -14,11 +14,6 @@ public class UpdateProductCommandValidator : AbstractValidator<UpdateProductComm
             .MaximumLength(100)
             .WithMessage("{PropertyName} cannot exceed 100 characters.");
 
-        RuleFor(p => p.Category)
-            .NotEmpty()
-            .WithMessage("{PropertyName} is required")
-            .NotNull();
-
         RuleFor(p => p.ExpirationDate)
             .NotEmpty()
             .WithMessage("{PropertyName} is required")
@@ -41,7 +36,8 @@ public class UpdateProductCommandValidator : AbstractValidator<UpdateProductComm
             .Matches("^[0-9]+$")
             .WithMessage("{PropertyName} must contain only numbers.")
             .Length(13)
-            .WithMessage("The length of '{PropertyName}' must be exactly 13 characters.");
+            .WithMessage("The length of '{PropertyName}' " +
+                         "must be exactly 13 characters.");
 
         RuleFor(p => p.DeliveryDate)
             .NotEmpty()
@@ -50,16 +46,16 @@ public class UpdateProductCommandValidator : AbstractValidator<UpdateProductComm
             .Must(deliveryDate => deliveryDate.Date <= DateTime.Now)
             .WithMessage("Delivery date cannot be greater than added date.");
         
+        RuleFor(p => p.CategoryId)
+            .NotEmpty()
+            .WithMessage("{PropertyName} is required")
+            .NotNull();
+        
         RuleFor(p => p.ProducentId)
             .NotEmpty()
             .WithMessage("{PropertyName} is required")
             .NotNull();
-        
-        RuleFor(p => p.UserId)
-            .NotEmpty()
-            .WithMessage("{PropertyName} is required")
-            .NotNull();
-        
+
         RuleFor(p => p.SupplierId)
             .NotEmpty()
             .WithMessage("{PropertyName} is required")

@@ -13,11 +13,6 @@ internal sealed class ProductConfigurator : IEntityTypeConfiguration<Product>
         builder.Property(p => p.Name)
             .IsRequired()
             .HasMaxLength(100);
-        builder.Property(p => p.Category)
-            .HasConversion(
-                    v => v.ToString(),
-                    v => (Category)Enum.Parse(typeof(Category), v))
-            .IsRequired();
         builder.Property(p => p.ExpirationDate)
             .IsRequired();
         builder.Property(p => p.Quantity)
@@ -26,7 +21,23 @@ internal sealed class ProductConfigurator : IEntityTypeConfiguration<Product>
             .HasMaxLength(13);
         builder.Property(p => p.DeliveryDate)
             .IsRequired();
+        
+        builder.Property(x => x.Name)
+            .HasColumnName("Name");
+        builder.Property(x => x.CategoryId)
+            .HasColumnName("CategoryId");
+        builder.Property(x => x.ProducentId)
+            .HasColumnName("ProducentId");
+        builder.Property(x => x.BarCode)
+            .HasColumnName("BarCode");
+        builder.Property(x => x.SupplierId)
+            .HasColumnName("SupplierId");
 
+        builder.HasOne(p => p.Category)
+            .WithMany(p => p.Products)
+            .HasForeignKey(p => p.CategoryId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
         builder.HasOne(p => p.Producent)
             .WithMany(p => p.Products)
             .HasForeignKey(p => p.ProducentId);

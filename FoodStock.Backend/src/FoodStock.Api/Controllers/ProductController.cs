@@ -1,11 +1,12 @@
-﻿using FoodStock.Application.Functions.ProductFunctions.Commands.CreateProduct;
+﻿using FoodStock.Application.Functions.CategoryFunctions.Queries.GetCategoryDetail;
+using FoodStock.Application.Functions.ProductFunctions.Commands.CreateProduct;
 using FoodStock.Application.Functions.ProductFunctions.Commands.DeleteProduct;
 using FoodStock.Application.Functions.ProductFunctions.Commands.UpdateProduct;
+using FoodStock.Application.Functions.ProductFunctions.Queries;
 using FoodStock.Application.Functions.ProductFunctions.Queries.GetProductDetail;
 using FoodStock.Application.Functions.ProductFunctions.Queries.GetProductsList;
-using FoodStock.Core.Exceptions;
 using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodStock.Api.Controllers;
@@ -22,9 +23,9 @@ public class ProductController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<ProductListViewModel>>> GetAll()
+    public async Task<ActionResult<List<ProductListViewModel>>> GetAll([FromQuery] string? orderBy)
     {
-        var products = await _mediator.Send(new GetProductListQuery());
+        var products = await _mediator.Send(new GetProductListQuery {OrderBy = orderBy});
         return Ok(products);
     }
 
@@ -38,16 +39,55 @@ public class ProductController : ControllerBase
         }
         return Ok(product);
     }
-    
+
+
+    [HttpGet("byCategoryId")]
+    public async Task<ActionResult<List<ProductListByCategoryIdViewModel>>> GetAllByCategoryId(
+        [FromQuery] Guid categoryId, [FromQuery] string? orderBy)
+    {
+        var category = await _mediator.Send(new GetCategoryDetailQuery { Id = categoryId });
+        if (category is null)
+        {
+            return NotFound();
+        }
+
+        var products = await _mediator.Send(new GetProductListByCategoryIdQuery { CategoryId = category.Id, OrderBy = orderBy});
+        return Ok(products);
+    }
+
     [HttpPost]
+    [Authorize(Roles = "Employee, Admin")]
     public async Task<ActionResult<CreateProductCommandResponse>> Post([FromBody] CreateProductCommand command)
     {
         var product = await _mediator.Send(command);
-        
+
         if (!product.Success && product.ValidationErrors != null)
         {
             return BadRequest(product);
         }
+        return Ok(product);
+    }
+
+    [HttpPost("byCategoryId")]
+    [Authorize(Roles = "Employee, Admin")]
+    public async Task<ActionResult<CreateProductCommandResponse>> CreateByCategoryId(
+        [FromBody] CreateProductCommand command,
+        [FromQuery] Guid categoryId)
+    {
+        var category = await _mediator.Send(new GetCategoryDetailQuery{ Id = categoryId });
+        
+        if (category is null)
+        {
+            return NotFound();
+        }
+        
+        command.CategoryId = category.Id;
+        var product = await _mediator.Send(command);
+        if (!product.Success && product.ValidationErrors != null)
+        {
+            return BadRequest(product);
+        }
+
         return Ok(product);
     }
 
@@ -70,7 +110,7 @@ public class ProductController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<ActionResult> Delete([FromRoute] Guid id)
     {
-         await _mediator.Send(new DeleteProductCommand() with { Id = id });
+         await _mediator.Send(new DeleteProductCommand { Id = id });
         return NoContent();
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace FoodStock.Core.Exceptions;
 
-public class ProducentNotFoundException : NotFoundException
+public sealed class ProducentNotFoundException : NotFoundException
 {
     public Guid Id { get; }
 

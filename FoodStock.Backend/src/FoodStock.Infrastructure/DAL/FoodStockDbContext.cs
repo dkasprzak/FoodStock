@@ -10,6 +10,10 @@ internal sealed class FoodStockDbContext : DbContext
     public DbSet<Supplier> Suppliers { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<Role> Roles { get; set; }
+    public DbSet<Category> Categories { get; set; }
+    public DbSet<Organization> Organizations { get; set; }
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderItem> OrderItems { get; set; }
 
     public FoodStockDbContext(DbContextOptions<FoodStockDbContext> options) : base(options)
     {

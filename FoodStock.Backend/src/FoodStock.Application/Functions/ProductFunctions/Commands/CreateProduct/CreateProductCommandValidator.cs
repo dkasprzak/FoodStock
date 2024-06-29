@@ -14,11 +14,6 @@ public class CreateProductCommandValidator
             .MaximumLength(100)
             .WithMessage("{PropertyName} cannot exceed 100 characters.");
 
-        RuleFor(p => p.Category)
-            .NotEmpty()
-            .WithMessage("{PropertyName} is required")
-            .NotNull();
-
         RuleFor(p => p.ExpirationDate)
             .NotEmpty()
             .WithMessage("{PropertyName} is required")
@@ -28,7 +23,7 @@ public class CreateProductCommandValidator
                 var oneWeekFromNow = DateTime.Now.AddDays(7);
                 return expirationDate.Date >= oneWeekFromNow;
             })
-            .WithMessage("Expiration date must be grater than one week.");
+            .WithMessage("The expiration date must be greater than or equal to one week.");
 
         RuleFor(p => p.Quantity)
             .NotEmpty()
@@ -49,17 +44,17 @@ public class CreateProductCommandValidator
             .NotNull()
             .Must(deliveryDate => deliveryDate.Date <= DateTime.Now)
             .WithMessage("Delivery date cannot be greater than added date.");
+
+        RuleFor(p => p.CategoryId)
+            .NotEmpty()
+            .WithMessage("{PropertyName} is required")
+            .NotNull();
         
         RuleFor(p => p.ProducentId)
             .NotEmpty()
             .WithMessage("{PropertyName} is required")
             .NotNull();
-        
-        RuleFor(p => p.UserId)
-            .NotEmpty()
-            .WithMessage("{PropertyName} is required")
-            .NotNull();
-        
+
         RuleFor(p => p.SupplierId)
             .NotEmpty()
             .WithMessage("{PropertyName} is required")
